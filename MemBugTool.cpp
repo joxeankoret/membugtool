@@ -131,9 +131,6 @@ void CMemoryChecker::check_before_free(ADDRINT a1,
   FUNC_TYPE_T type,
   ADDRINT *ref_a1)
 {
-  if ( is_in_allocator() )
-    return;
-
   PIN_LockClient();
 
   bool found = false;
@@ -218,16 +215,13 @@ void CMemoryChecker::check_alloc(size_t size)
   else if ( size == 0 )
   {
     printf("WARNING! Zero allocation detected!\n");
-    //add_breakpoint("WARNING! Zero allocation detected!\n");
+    add_breakpoint("WARNING! Zero allocation detected!\n");
   }
 }
 
 //------------------------------------------------------------------------------
 void CMemoryChecker::check_before_malloc(size_t size, FUNC_TYPE_T type)
 {
-  if ( is_in_allocator() )
-    return;
-
   PIN_LockClient();
 
   //printf("[%d]  before malloc(): size %zu\n", PIN_GetTid(), size);
@@ -571,6 +565,7 @@ bool CHooksInstaller::hook_one_function(
     RTN_Close(target_rtn);
     ret = true;
   }
+  
   return ret;
 }
 
